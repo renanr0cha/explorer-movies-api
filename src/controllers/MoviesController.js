@@ -35,6 +35,23 @@ class MoviesController {
       tags
     })
   }
+
+  async delete(request, response) {
+    const { id } = request.params
+
+    await knex("movies").where({ id }).delete()
+
+    return response.json()
+  }
+
+  async index(request, response) {
+    const { user_id } = request.query
+    const movies = await knex("movies")
+    .where({ user_id })
+    .orderBy("title")
+
+    return response.json(movies)
+  }
 }
 
 module.exports = MoviesController
