@@ -10,17 +10,18 @@ class UsersController {
 
     const database = await sqliteConnection()
 
-    const checkIfUserExists = await database.get("SELECT * FROM users WHERE email = (?)", [email])
+    const checkUserExists = await database.get("SELECT * FROM users WHERE email = (?)", [email])
 
-    if(checkIfUserExists) {
-      throw new AppError("Este e-mail já está em uso!")
+
+    if(checkUserExists) {
+      throw new AppError("Este email já está em uso!")
     }
 
     const hashedPassword = await hash(password, 8)
 
     await database.run("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", [name, email, hashedPassword])
 
-    response.status(201).json()
+    return response.status(201).json({ name, email, password })
   }
 }
 
